@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express();
-const quotes = require('./quotes.json')
 const userRouter = require('../routes/userRoutes');
 const noteRouter = require('../routes/noteRoutes');
+
+const mongoose = require('mongoose');
 
 app.use('/users', userRouter)
 app.use('/notes', noteRouter)
@@ -13,16 +14,15 @@ app.get('/', (req, res) => {
     res.send("Hey fuckers")
 })
 
-app.get('/quote', (req, res) => {
-    res.status(200).json(quotes);
-})
 
-app.get('/random', (req, res) => {
-    let index = Math.floor(Math.random() * quotes.length)
-    let quote = quotes[index];
-    res.status(404).json(quote)
-})
+mongoose.connect("mongodb+srv://admin:code@donibapi.qqipmei.mongodb.net/Node-API?retryWrites=true&w=majority")
+    .then( () => {
+        console.log("Database connected to mongoDB successfully!")
+        app.listen(8080, () => {
+            console.log("Server started at port 8080")
+        })
+    })
+    .catch( (error) => {
+        console.log(error);
+    })
 
-app.listen(8080, () => {
-    console.log("server started at port 8080")
-})
